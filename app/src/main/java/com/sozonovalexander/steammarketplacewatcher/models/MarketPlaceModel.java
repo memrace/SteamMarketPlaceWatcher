@@ -9,7 +9,9 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.CompletableEmitter;
 import io.reactivex.rxjava3.core.Single;
 import lombok.NonNull;
-
+/**
+ * Представляет модель итема на торговой площадке.
+ */
 public class MarketPlaceModel {
 
     private final SteamMarketPlaceApi _steamMarketPlaceApi;
@@ -23,7 +25,6 @@ public class MarketPlaceModel {
         return _steamMarketPlaceApi.getPriceInfo(steamAppId.getId(), currency.getValue(), marketHashName);
     }
 
-    // example uri https://steamcommunity.com/market/listings/730/StatTrak%E2%84%A2%20M4A1-S%20%7C%20Hyper%20Beast%20(Minimal%20Wear)
     Single<ItemMarketInfo> getItemMarketInfo(@NonNull String uri) {
         if (!uri.contains("https://steamcommunity.com/market/listings")) {
             return Single.error(new URISyntaxException(uri, "Неправильная ссылка."));
@@ -51,7 +52,7 @@ public class MarketPlaceModel {
 
         }
         // todo parse image && name;
-        return Single.create(emitter -> emitter.onSuccess(new ItemMarketInfo(appId, marketHashName, "")));
+        return Single.create(emitter -> emitter.onSuccess(new ItemMarketInfo(appId, marketHashName, "", "")));
     }
 
     Single<List<MarketPlaceItem>> getItems() {

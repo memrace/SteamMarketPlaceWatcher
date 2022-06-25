@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import lombok.Getter;
 
+/**
+ * Представляет информацию о цене итема на торговой площадке.
+ */
 public class ItemPriceInfo {
     @Getter
     @SerializedName("lowest_price")

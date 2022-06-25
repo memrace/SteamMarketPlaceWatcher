@@ -2,6 +2,9 @@ package com.sozonovalexander.steammarketplacewatcher.models;
 
 import lombok.Getter;
 
+/**
+ * Перечисляет идентификаторы игр.
+ */
 public enum SteamAppId {
     CS_GO(730, "CS:GO"),
     DOTA_2(570, "Dota 2");

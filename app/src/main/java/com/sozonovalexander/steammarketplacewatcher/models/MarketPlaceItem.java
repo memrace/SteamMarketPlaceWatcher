@@ -4,6 +4,9 @@ import java.net.URI;
 
 import lombok.Getter;
 
+/**
+ * Представляет итем на торговой площадке.
+ */
 public class MarketPlaceItem {
     @Getter
     private final String id;

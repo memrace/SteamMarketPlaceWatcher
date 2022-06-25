@@ -24,7 +24,6 @@ public class MarketPlaceModelTest {
         _marketPlaceModelTest = new MarketPlaceModel(_steamMarketPlaceApiMock);
     }
 
-    // test uri https://steamcommunity.com/market/listings/730/StatTrak%E2%84%A2%20M4A1-S%20%7C%20Hyper%20Beast%20(Minimal%20Wear)
     @Test
     public void getItemMarketInfo_positive() {
         var result = _marketPlaceModelTest.getItemMarketInfo(_testUri);
@@ -32,7 +31,7 @@ public class MarketPlaceModelTest {
         result.subscribe(testObserver);
         testObserver.assertComplete();
         testObserver.assertNoErrors();
-        testObserver.assertValue(itemMarketInfo -> itemMarketInfo.get_marketHashName().equals("StatTrak%E2%84%A2%20M4A1-S%20%7C%20Hyper%20Beast%20(Minimal%20Wear)") && itemMarketInfo.get_steamAppId().equals(SteamAppId.CS_GO));
+        testObserver.assertValue(itemMarketInfo -> itemMarketInfo.getMarketHashName().equals("StatTrak%E2%84%A2%20M4A1-S%20%7C%20Hyper%20Beast%20(Minimal%20Wear)") && itemMarketInfo.getSteamAppId().equals(SteamAppId.CS_GO));
     }
 
     @Test

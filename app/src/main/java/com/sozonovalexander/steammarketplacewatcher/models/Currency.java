@@ -2,6 +2,9 @@ package com.sozonovalexander.steammarketplacewatcher.models;
 
 import lombok.Getter;
 
+/**
+ * Перечисляет валюты.
+ */
 public enum Currency {
     USD((byte) 1),
     EUR((byte) 3),
