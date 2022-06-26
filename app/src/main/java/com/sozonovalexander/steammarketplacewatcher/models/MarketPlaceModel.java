@@ -1,5 +1,9 @@
 package com.sozonovalexander.steammarketplacewatcher.models;
 
+import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
+import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceItemEntity;
+import com.sozonovalexander.steammarketplacewatcher.network.SteamMarketPlaceApi;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,13 +12,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.CompletableEmitter;
 import io.reactivex.rxjava3.core.Single;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Представляет модель итема на торговой площадке.
@@ -22,17 +28,23 @@ import lombok.NonNull;
 public class MarketPlaceModel {
 
     private final SteamMarketPlaceApi _steamMarketPlaceApi;
+    private final MarketPlaceDatabase _marketPlaceDatabase;
+
+    @Getter
+    @Setter
+    private Currency currency = Currency.USD;
 
     @Inject
-    MarketPlaceModel(SteamMarketPlaceApi steamMarketPlaceApi) {
+    MarketPlaceModel(SteamMarketPlaceApi steamMarketPlaceApi, MarketPlaceDatabase marketPlaceDatabase) {
         _steamMarketPlaceApi = steamMarketPlaceApi;
+        _marketPlaceDatabase = marketPlaceDatabase;
     }
 
-    Single<ItemPriceInfo> getItemPriceIfo(@NonNull SteamAppId steamAppId, @NonNull Currency currency, @NonNull String marketHashName) {
+    public Single<ItemPriceInfo> getItemPriceIfo(@NonNull SteamAppId steamAppId, @NonNull String marketHashName) {
         return _steamMarketPlaceApi.getPriceInfo(steamAppId.getId(), currency.getValue(), marketHashName);
     }
 
-    Single<ItemMarketInfo> getItemMarketInfo(@NonNull String uri) {
+    public Single<ItemMarketInfo> getItemMarketInfo(@NonNull String uri) {
         if (!uri.contains("https://steamcommunity.com/market/listings")) {
             return Single.error(new URISyntaxException(uri, "Неправильная ссылка."));
         }
@@ -75,19 +87,45 @@ public class MarketPlaceModel {
         });
     }
 
-    Single<List<MarketPlaceItem>> getItems() {
-        return Single.create(emitter -> emitter.onSuccess(List.of()));
+    public Single<List<MarketPlaceItem>> getItems() {
+        return _marketPlaceDatabase.marketPlaceItemDao()
+                .getMarketPlaceItems()
+                .map(items -> items.stream()
+                        .map(item -> new MarketPlaceItem(
+                                item.imageUri,
+                                item.name,
+                                item.hashMarketName,
+                                item.lowestPrice,
+                                item.medianPrice,
+                                item.steamAppId)).collect(Collectors.toList()));
     }
 
-    Completable addItem(MarketPlaceItem item) {
-        return Completable.create(CompletableEmitter::onComplete);
+    public Completable addItem(MarketPlaceItem item) {
+        return _marketPlaceDatabase.marketPlaceItemDao().addMarketPlaceItem(mapItemToEntity(item));
     }
 
-    Completable deleteItem(String id) {
-        return Completable.create(CompletableEmitter::onComplete);
+    public Completable deleteItem(MarketPlaceItem item) {
+        return _marketPlaceDatabase.marketPlaceItemDao().deleteMarketPlaceItem(mapItemToEntity(item));
     }
 
-    Completable updateItems() {
-        return Completable.create(CompletableEmitter::onComplete);
+    public Completable updateItem(MarketPlaceItem item) {
+        return _marketPlaceDatabase.marketPlaceItemDao().updateMarketPlaceItem(mapItemToEntity(item));
+    }
+
+    public Completable updateItems(List<MarketPlaceItem> items) {
+        return _marketPlaceDatabase
+                .marketPlaceItemDao()
+                .updateMarketPlaceItems(items.stream().map(MarketPlaceModel::mapItemToEntity).collect(Collectors.toList()));
+    }
+
+    private static MarketPlaceItemEntity mapItemToEntity(MarketPlaceItem item) {
+        var entity = new MarketPlaceItemEntity();
+        entity.id = item.getId();
+        entity.imageUri = item.getImageUri().toString();
+        entity.lowestPrice = item.getLowestPrice();
+        entity.medianPrice = item.getMedianPrice();
+        entity.steamAppId = item.getSteamAppId();
+        entity.hashMarketName = item.getHashMarketName();
+        return entity;
     }
 }

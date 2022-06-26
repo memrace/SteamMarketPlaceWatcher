@@ -1,11 +1,19 @@
 package com.sozonovalexander.steammarketplacewatcher;
 
-import com.sozonovalexander.steammarketplacewatcher.models.SteamMarketPlaceApi;
+import android.app.Application;
+
+import androidx.room.Room;
+
+import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
+import com.sozonovalexander.steammarketplacewatcher.network.SteamMarketPlaceApi;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -17,6 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HiltModule {
 
     @Provides
+    @Singleton
     public static SteamMarketPlaceApi provideSteamMarketPlaceApi() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -29,5 +38,11 @@ public class HiltModule {
                 .client(client)
                 .build()
                 .create(SteamMarketPlaceApi.class);
+    }
+
+    @Provides
+    @Singleton
+    public static MarketPlaceDatabase provideMarketPlaceDatabase(@ApplicationContext Application app) {
+        return Room.databaseBuilder(app, MarketPlaceDatabase.class, "marketplace-database").build();
     }
 }

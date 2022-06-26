@@ -1,4 +1,6 @@
-package com.sozonovalexander.steammarketplacewatcher.models;
+package com.sozonovalexander.steammarketplacewatcher.network;
+
+import com.sozonovalexander.steammarketplacewatcher.models.ItemPriceInfo;
 
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.GET;

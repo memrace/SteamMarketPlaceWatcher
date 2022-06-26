@@ -1,10 +1,12 @@
 package com.sozonovalexander.steammarketplacewatcher.models;
 
+import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
+import com.sozonovalexander.steammarketplacewatcher.network.SteamMarketPlaceApi;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.net.URISyntaxException;
@@ -13,15 +15,16 @@ import io.reactivex.rxjava3.observers.TestObserver;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MarketPlaceModelTest {
-    @Mock
+    @Mock(stubOnly = true)
     private SteamMarketPlaceApi _steamMarketPlaceApiMock;
     private MarketPlaceModel _marketPlaceModelTest;
     private final String _testUri = "https://steamcommunity.com/market/listings/730/StatTrak%E2%84%A2%20M4A1-S%20%7C%20Hyper%20Beast%20(Minimal%20Wear)";
+    @Mock(stubOnly = true)
+    private MarketPlaceDatabase _db;
 
     @Before
     public void setUp() {
-        _steamMarketPlaceApiMock = Mockito.mock(SteamMarketPlaceApi.class);
-        _marketPlaceModelTest = new MarketPlaceModel(_steamMarketPlaceApiMock);
+        _marketPlaceModelTest = new MarketPlaceModel(_steamMarketPlaceApiMock, _db);
     }
 
     @Test

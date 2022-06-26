@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 public class MarketPlaceItem {
     @Getter
-    private final String id;
+    private final int id;
     @Getter
     private final URI imageUri;
     @Getter
@@ -21,22 +21,21 @@ public class MarketPlaceItem {
     @Getter
     private final String medianPrice;
     @Getter
-    private final Currency currency;
+    private final SteamAppId steamAppId;
 
-    public MarketPlaceItem(String id,
-                           String imageUri,
+    public MarketPlaceItem(String imageUri,
                            String name,
                            String hashMarketName,
                            String lowestPrice,
                            String medianPrice,
-                           Currency currency) {
-        this.id = id;
+                           SteamAppId steamAppId) {
         this.imageUri = URI.create(imageUri);
         this.name = name;
         this.hashMarketName = hashMarketName;
         this.lowestPrice = lowestPrice;
         this.medianPrice = medianPrice;
-        this.currency = currency;
+        this.steamAppId = steamAppId;
+        this.id = (hashMarketName + steamAppId.getId()).hashCode();
     }
 }
 
