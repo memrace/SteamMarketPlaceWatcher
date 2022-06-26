@@ -28,10 +28,15 @@ public class MarketPlaceModelTest {
     public void getItemMarketInfo_positive() {
         var result = _marketPlaceModelTest.getItemMarketInfo(_testUri);
         TestObserver<ItemMarketInfo> testObserver = new TestObserver<>();
-        result.subscribe(testObserver);
+        result.blockingSubscribe(testObserver);
         testObserver.assertComplete();
         testObserver.assertNoErrors();
-        testObserver.assertValue(itemMarketInfo -> itemMarketInfo.getMarketHashName().equals("StatTrak%E2%84%A2%20M4A1-S%20%7C%20Hyper%20Beast%20(Minimal%20Wear)") && itemMarketInfo.getSteamAppId().equals(SteamAppId.CS_GO));
+        testObserver.assertValue(
+                itemMarketInfo -> itemMarketInfo.getMarketHashName().equals("StatTrak%E2%84%A2%20M4A1-S%20%7C%20Hyper%20Beast%20(Minimal%20Wear)")
+                        && itemMarketInfo.getSteamAppId().equals(SteamAppId.CS_GO)
+                        && itemMarketInfo.getImageUri().equals("https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhz2v_Nfz5H_uO1gb-Gw_alDLPIhm5D18d0i_rVyoD8j1yglB89IT6mOoWUegM-aFvX_Fe_yO3q1Ja6vsnMn3Q163YntH6Lnxfh1UpFbrdng_SACQLJQIlmyYc/360fx360f")
+                        && itemMarketInfo.getName().equals("StatTrak™ M4A1-S | Hyper Beast (Minimal Wear)")
+        );
     }
 
     @Test

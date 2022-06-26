@@ -1,7 +1,13 @@
 package com.sozonovalexander.steammarketplacewatcher.models;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -9,6 +15,7 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.CompletableEmitter;
 import io.reactivex.rxjava3.core.Single;
 import lombok.NonNull;
+
 /**
  * Представляет модель итема на торговой площадке.
  */
@@ -17,7 +24,7 @@ public class MarketPlaceModel {
     private final SteamMarketPlaceApi _steamMarketPlaceApi;
 
     @Inject
-    MarketPlaceModel(@NonNull SteamMarketPlaceApi steamMarketPlaceApi) {
+    MarketPlaceModel(SteamMarketPlaceApi steamMarketPlaceApi) {
         _steamMarketPlaceApi = steamMarketPlaceApi;
     }
 
@@ -37,7 +44,6 @@ public class MarketPlaceModel {
         } catch (NumberFormatException e) {
             return Single.error(e);
         }
-
         var marketHashName = blocks[4];
         SteamAppId appId;
         switch (parsedAppId) {
@@ -49,10 +55,24 @@ public class MarketPlaceModel {
                 break;
             default:
                 return Single.error(new IllegalArgumentException("Приложение поддерживает только CS:GO и Dota 2."));
-
         }
-        // todo parse image && name;
-        return Single.create(emitter -> emitter.onSuccess(new ItemMarketInfo(appId, marketHashName, "", "")));
+        return Single.create(emitter -> {
+            Thread t = new Thread(() -> {
+                try {
+                    Document document = Jsoup.connect(uri).get();
+                    final Element imageElement = Objects.requireNonNull(document.selectFirst("div.market_listing_largeimage")).selectFirst("img");
+                    assert imageElement != null;
+                    final String imageSrc = imageElement.attr("src");
+                    final Element nameElement = document.selectFirst("span.market_listing_item_name");
+                    assert nameElement != null;
+                    final String itemName = nameElement.text();
+                    emitter.onSuccess(new ItemMarketInfo(appId, marketHashName, imageSrc, itemName));
+                } catch (IOException e) {
+                    emitter.onError(new IOException("Во время загрузки произошла ошибка."));
+                }
+            });
+            t.start();
+        });
     }
 
     Single<List<MarketPlaceItem>> getItems() {
