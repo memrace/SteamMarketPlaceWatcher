@@ -56,7 +56,7 @@ public class MarketPlaceDatabaseTest {
     public void writeItemAndReadInList() {
         var item = getTestItem(1);
         marketPlaceItemDao.addMarketPlaceItem(item).blockingAwait(1000, TimeUnit.MILLISECONDS);
-        List<MarketPlaceItemEntity> items = marketPlaceItemDao.getMarketPlaceItems().blockingGet();
+        List<MarketPlaceItemEntity> items = marketPlaceItemDao.getMarketPlaceItems().blockingFirst();
         assertTrue(items.stream().anyMatch(i -> i.id == item.id));
     }
 
@@ -66,7 +66,7 @@ public class MarketPlaceDatabaseTest {
         marketPlaceItemDao.addMarketPlaceItem(item).blockingAwait(1000, TimeUnit.MILLISECONDS);
         item.name = "22";
         marketPlaceItemDao.updateMarketPlaceItem(item).blockingAwait(1000, TimeUnit.MILLISECONDS);
-        List<MarketPlaceItemEntity> items = marketPlaceItemDao.getMarketPlaceItems().blockingGet();
+        List<MarketPlaceItemEntity> items = marketPlaceItemDao.getMarketPlaceItems().blockingFirst();
         var updatedItem = items.stream().filter(i -> i.id == 2).findFirst().get();
         assertEquals("22", updatedItem.name);
     }
@@ -75,10 +75,10 @@ public class MarketPlaceDatabaseTest {
     public void deleteItem() {
         var item = getTestItem(2);
         marketPlaceItemDao.addMarketPlaceItem(item).blockingAwait(1000, TimeUnit.MILLISECONDS);
-        List<MarketPlaceItemEntity> items = marketPlaceItemDao.getMarketPlaceItems().blockingGet();
+        List<MarketPlaceItemEntity> items = marketPlaceItemDao.getMarketPlaceItems().blockingFirst();
         var beforeSize = items.size();
         marketPlaceItemDao.deleteMarketPlaceItem(items.get(0)).blockingAwait(1000, TimeUnit.MILLISECONDS);
-        items = marketPlaceItemDao.getMarketPlaceItems().blockingGet();
+        items = marketPlaceItemDao.getMarketPlaceItems().blockingFirst();
         var afterSize = items.size();
         assertNotEquals(beforeSize, afterSize);
     }

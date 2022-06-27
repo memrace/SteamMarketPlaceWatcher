@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.scopes.ActivityRetainedScoped;
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import lombok.Getter;
 import lombok.NonNull;
@@ -25,6 +27,7 @@ import lombok.Setter;
 /**
  * Представляет модель итема на торговой площадке.
  */
+@ActivityRetainedScoped
 public class MarketPlaceModel {
 
     private final SteamMarketPlaceApi _steamMarketPlaceApi;
@@ -35,7 +38,7 @@ public class MarketPlaceModel {
     private Currency currency = Currency.USD;
 
     @Inject
-    MarketPlaceModel(SteamMarketPlaceApi steamMarketPlaceApi, MarketPlaceDatabase marketPlaceDatabase) {
+    public MarketPlaceModel(SteamMarketPlaceApi steamMarketPlaceApi, MarketPlaceDatabase marketPlaceDatabase) {
         _steamMarketPlaceApi = steamMarketPlaceApi;
         _marketPlaceDatabase = marketPlaceDatabase;
     }
@@ -87,7 +90,7 @@ public class MarketPlaceModel {
         });
     }
 
-    public Single<List<MarketPlaceItem>> getItems() {
+    public Flowable<List<MarketPlaceItem>> getItems() {
         return _marketPlaceDatabase.marketPlaceItemDao()
                 .getMarketPlaceItems()
                 .map(items -> items.stream()

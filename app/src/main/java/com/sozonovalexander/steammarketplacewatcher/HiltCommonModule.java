@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.room.Room;
 
 import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
+import com.sozonovalexander.steammarketplacewatcher.models.MarketPlaceModel;
 import com.sozonovalexander.steammarketplacewatcher.network.SteamMarketPlaceApi;
 
 import javax.inject.Singleton;
@@ -14,6 +15,7 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
 import dagger.hilt.android.qualifiers.ApplicationContext;
+import dagger.hilt.android.scopes.ViewModelScoped;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -22,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 @InstallIn(ActivityComponent.class)
-public class HiltModule {
+public class HiltCommonModule {
 
     @Provides
     @Singleton
@@ -45,4 +47,5 @@ public class HiltModule {
     public static MarketPlaceDatabase provideMarketPlaceDatabase(@ApplicationContext Application app) {
         return Room.databaseBuilder(app, MarketPlaceDatabase.class, "marketplace-database").build();
     }
+
 }

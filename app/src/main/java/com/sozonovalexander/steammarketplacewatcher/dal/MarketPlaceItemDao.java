@@ -10,13 +10,14 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface MarketPlaceItemDao {
 
     @Query("SELECT * FROM MarketPlaceItemEntity")
-    Single<List<MarketPlaceItemEntity>> getMarketPlaceItems();
+    Flowable<List<MarketPlaceItemEntity>> getMarketPlaceItems();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable addMarketPlaceItem(MarketPlaceItemEntity item);
