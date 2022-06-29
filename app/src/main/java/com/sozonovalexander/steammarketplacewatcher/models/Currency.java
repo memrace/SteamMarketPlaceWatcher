@@ -6,14 +6,17 @@ import lombok.Getter;
  * Перечисляет валюты.
  */
 public enum Currency {
-    USD((byte) 1),
-    EUR((byte) 3),
-    RUB((byte) 5);
+    USD("$", (byte) 1),
+    EUR("€", (byte) 3),
+    RUB("pуб.", (byte) 5);
 
+    @Getter
+    private final CharSequence symbol;
     @Getter
     private final byte value;
 
-    Currency(byte value) {
+    Currency(CharSequence symbol, byte value) {
+        this.symbol = symbol;
         this.value = value;
     }
 }

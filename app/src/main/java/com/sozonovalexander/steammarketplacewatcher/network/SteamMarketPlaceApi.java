@@ -22,5 +22,5 @@ public interface SteamMarketPlaceApi {
      * @param marketHashName Хэш имя торговой площадки.
      */
     @GET("priceoverview")
-    Single<ItemPriceInfo> getPriceInfo(@Query("appid") int appId, @Query("currency") byte currency, @Query("market_hash_name") String marketHashName);
+    Single<ItemPriceInfo> getPriceInfo(@Query("appid") int appId, @Query("currency") byte currency, @Query("market_hash_name") CharSequence marketHashName);
 }

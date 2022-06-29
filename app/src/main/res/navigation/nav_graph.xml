@@ -11,7 +11,7 @@
         android:label="Мои отслеживания"
         tools:layout="@layout/fragment_market_place_items">
         <action
-            android:id="@+id/action_marketPlaceItemsFragment_to_marketPlaceAddItemFragment"
+            android:id="@+id/action_goToAddNewItem"
             app:destination="@id/marketPlaceAddItemFragment" />
     </fragment>
     <fragment

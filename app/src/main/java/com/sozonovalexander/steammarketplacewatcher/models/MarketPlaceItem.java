@@ -15,7 +15,7 @@ public class MarketPlaceItem {
     @Getter
     private final String name;
     @Getter
-    private final String hashMarketName;
+    private final CharSequence hashMarketName;
     @Getter
     private final String lowestPrice;
     @Getter
@@ -25,7 +25,7 @@ public class MarketPlaceItem {
 
     public MarketPlaceItem(String imageUri,
                            String name,
-                           String hashMarketName,
+                           CharSequence hashMarketName,
                            String lowestPrice,
                            String medianPrice,
                            SteamAppId steamAppId) {
@@ -35,7 +35,7 @@ public class MarketPlaceItem {
         this.lowestPrice = lowestPrice;
         this.medianPrice = medianPrice;
         this.steamAppId = steamAppId;
-        this.id = (hashMarketName + steamAppId.getId()).hashCode();
+        this.id = (hashMarketName.toString() + steamAppId.getId()).hashCode();
     }
 }
 

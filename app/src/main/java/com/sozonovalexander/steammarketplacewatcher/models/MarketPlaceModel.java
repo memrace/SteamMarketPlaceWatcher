@@ -1,7 +1,10 @@
 package com.sozonovalexander.steammarketplacewatcher.models;
 
+import android.net.Uri;
+
 import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
 import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceItemEntity;
+import com.sozonovalexander.steammarketplacewatcher.dal.UserSettingsEntity;
 import com.sozonovalexander.steammarketplacewatcher.network.SteamMarketPlaceApi;
 
 import org.jsoup.Jsoup;
@@ -9,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +23,7 @@ import javax.inject.Inject;
 import dagger.hilt.android.scopes.ActivityRetainedScoped;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import lombok.Getter;
 import lombok.NonNull;
@@ -43,15 +48,27 @@ public class MarketPlaceModel {
         _marketPlaceDatabase = marketPlaceDatabase;
     }
 
-    public Single<ItemPriceInfo> getItemPriceIfo(@NonNull SteamAppId steamAppId, @NonNull String marketHashName) {
+    public Maybe<UserSettingsEntity> getUserSettings(int userId) {
+        return _marketPlaceDatabase.userSettingsDao().getUserSettings(userId);
+    }
+
+    public Completable addUserSettings(UserSettingsEntity settings) {
+        return _marketPlaceDatabase.userSettingsDao().insertUserSettings(settings);
+    }
+
+    public Completable updateUserSettings(UserSettingsEntity settings) {
+        return _marketPlaceDatabase.userSettingsDao().updateUserSettings(settings);
+    }
+
+    public Single<ItemPriceInfo> getItemPriceIfo(@NonNull SteamAppId steamAppId, @NonNull CharSequence marketHashName) {
         return _steamMarketPlaceApi.getPriceInfo(steamAppId.getId(), currency.getValue(), marketHashName);
     }
 
-    public Single<ItemMarketInfo> getItemMarketInfo(@NonNull String uri) {
-        if (!uri.contains("https://steamcommunity.com/market/listings")) {
-            return Single.error(new URISyntaxException(uri, "Неправильная ссылка."));
+    public Single<ItemMarketInfo> getItemMarketInfo(@NonNull Uri uri) {
+        if (!uri.toString().contains("https://steamcommunity.com/market/listings")) {
+            return Single.error(new URISyntaxException(uri.toString(), "Неправильная ссылка."));
         }
-        var noHttpsUri = uri.substring(8);
+        var noHttpsUri = uri.toString().substring(8);
         var blocks = noHttpsUri.split("/");
         var parsedAppId = 0;
         try {
@@ -59,7 +76,7 @@ public class MarketPlaceModel {
         } catch (NumberFormatException e) {
             return Single.error(e);
         }
-        var marketHashName = blocks[4];
+        CharSequence marketHashName = Uri.decode(blocks[4]);
         SteamAppId appId;
         switch (parsedAppId) {
             case 730:
@@ -74,7 +91,7 @@ public class MarketPlaceModel {
         return Single.create(emitter -> {
             Thread t = new Thread(() -> {
                 try {
-                    Document document = Jsoup.connect(uri).get();
+                    Document document = Jsoup.connect(uri.toString()).get();
                     final Element imageElement = Objects.requireNonNull(document.selectFirst("div.market_listing_largeimage")).selectFirst("img");
                     assert imageElement != null;
                     final String imageSrc = imageElement.attr("src");
@@ -128,7 +145,7 @@ public class MarketPlaceModel {
         entity.lowestPrice = item.getLowestPrice();
         entity.medianPrice = item.getMedianPrice();
         entity.steamAppId = item.getSteamAppId();
-        entity.hashMarketName = item.getHashMarketName();
+        entity.hashMarketName = item.getHashMarketName().toString();
         return entity;
     }
 }

@@ -1,5 +1,7 @@
 package com.sozonovalexander.steammarketplacewatcher.models;
 
+import android.net.Uri;
+
 import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
 import com.sozonovalexander.steammarketplacewatcher.network.SteamMarketPlaceApi;
 
@@ -9,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import io.reactivex.rxjava3.observers.TestObserver;
@@ -29,7 +32,7 @@ public class MarketPlaceModelTest {
 
     @Test
     public void getItemMarketInfo_positive() {
-        var result = _marketPlaceModelTest.getItemMarketInfo(_testUri);
+        var result = _marketPlaceModelTest.getItemMarketInfo(Uri.parse(_testUri));
         TestObserver<ItemMarketInfo> testObserver = new TestObserver<>();
         result.blockingSubscribe(testObserver);
         testObserver.assertComplete();
@@ -44,7 +47,7 @@ public class MarketPlaceModelTest {
 
     @Test
     public void getItemMarketInfo_negative_illegal_uri() {
-        var result = _marketPlaceModelTest.getItemMarketInfo("illegal_uri");
+        var result = _marketPlaceModelTest.getItemMarketInfo(Uri.parse("illegal_uri"));
         TestObserver<ItemMarketInfo> testObserver = new TestObserver<>();
         result.subscribe(testObserver);
         testObserver.assertError(URISyntaxException.class);
@@ -52,7 +55,7 @@ public class MarketPlaceModelTest {
 
     @Test
     public void getItemMarketInfo_negative_illegal_appId() {
-        var result = _marketPlaceModelTest.getItemMarketInfo(_testUri.replace("730", "test"));
+        var result = _marketPlaceModelTest.getItemMarketInfo(Uri.parse(_testUri.replace("730", "test")));
         TestObserver<ItemMarketInfo> testObserver = new TestObserver<>();
         result.subscribe(testObserver);
         testObserver.assertError(NumberFormatException.class);
@@ -60,7 +63,7 @@ public class MarketPlaceModelTest {
 
     @Test
     public void getItemMarketInfo_negative_not_supporting_game() {
-        var result = _marketPlaceModelTest.getItemMarketInfo(_testUri.replace("730", "000"));
+        var result = _marketPlaceModelTest.getItemMarketInfo(Uri.parse(_testUri.replace("730", "000")));
         TestObserver<ItemMarketInfo> testObserver = new TestObserver<>();
         result.subscribe(testObserver);
         testObserver.assertError(IllegalArgumentException.class);

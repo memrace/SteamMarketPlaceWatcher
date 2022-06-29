@@ -9,13 +9,18 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.sozonovalexander.steammarketplacewatcher.R;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import lombok.Getter;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-    NavController navController;
+    @Getter
+    private NavController navController;
+    @Getter
+    private TextInputLayout appBarMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.topAppBar);
         NavigationUI.setupWithNavController(
                 toolbar, navController, appBarConfiguration);
+        appBarMenu = findViewById(R.id.menu);
+        assert appBarMenu != null;
     }
 
 }

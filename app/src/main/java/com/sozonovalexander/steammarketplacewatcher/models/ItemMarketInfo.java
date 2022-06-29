@@ -9,13 +9,13 @@ public class ItemMarketInfo {
     @Getter
     private final SteamAppId steamAppId;
     @Getter
-    private final String marketHashName;
+    private final CharSequence marketHashName;
     @Getter
     private final String imageUri;
     @Getter
     private final String name;
 
-    ItemMarketInfo(SteamAppId steamAppId, String marketHashName, String imageUri, String name) {
+    ItemMarketInfo(SteamAppId steamAppId, CharSequence marketHashName, String imageUri, String name) {
         this.steamAppId = steamAppId;
         this.marketHashName = marketHashName;
         this.imageUri = imageUri;
