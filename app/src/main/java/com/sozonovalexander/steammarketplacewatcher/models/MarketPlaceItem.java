@@ -1,5 +1,6 @@
 package com.sozonovalexander.steammarketplacewatcher.models;
 
+import java.io.Serializable;
 import java.net.URI;
 
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Getter;
 /**
  * Представляет итем на торговой площадке.
  */
-public class MarketPlaceItem {
+public class MarketPlaceItem implements Serializable {
     @Getter
     private final int id;
     @Getter
@@ -15,7 +16,7 @@ public class MarketPlaceItem {
     @Getter
     private final String name;
     @Getter
-    private final CharSequence hashMarketName;
+    private final String hashMarketName;
     @Getter
     private final String lowestPrice;
     @Getter
@@ -25,7 +26,7 @@ public class MarketPlaceItem {
 
     public MarketPlaceItem(String imageUri,
                            String name,
-                           CharSequence hashMarketName,
+                           String hashMarketName,
                            String lowestPrice,
                            String medianPrice,
                            SteamAppId steamAppId) {
@@ -35,7 +36,7 @@ public class MarketPlaceItem {
         this.lowestPrice = lowestPrice;
         this.medianPrice = medianPrice;
         this.steamAppId = steamAppId;
-        this.id = (hashMarketName.toString() + steamAppId.getId()).hashCode();
+        this.id = (hashMarketName + steamAppId.getId()).hashCode();
     }
 }
 

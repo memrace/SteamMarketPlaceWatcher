@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import dagger.hilt.android.HiltAndroidApp;
 
 @HiltAndroidApp
-public class SteamMarketPlaceWatcher extends Application {
+public class SteamMarketPlaceWatcherApplication extends Application {
     public final ExecutorService executorService = Executors.newFixedThreadPool(4);
     private Handler handler;
 

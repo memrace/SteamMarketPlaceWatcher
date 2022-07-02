@@ -1,7 +1,5 @@
 package com.sozonovalexander.steammarketplacewatcher.models;
 
-import android.net.Uri;
-
 import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
 import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceItemEntity;
 import com.sozonovalexander.steammarketplacewatcher.dal.UserSettingsEntity;
@@ -60,15 +58,15 @@ public class MarketPlaceModel {
         return _marketPlaceDatabase.userSettingsDao().updateUserSettings(settings);
     }
 
-    public Single<ItemPriceInfo> getItemPriceIfo(@NonNull SteamAppId steamAppId, @NonNull CharSequence marketHashName) {
+    public Single<ItemPriceInfo> getItemPriceIfo(@NonNull SteamAppId steamAppId, @NonNull String marketHashName) {
         return _steamMarketPlaceApi.getPriceInfo(steamAppId.getId(), currency.getValue(), marketHashName);
     }
 
-    public Single<ItemMarketInfo> getItemMarketInfo(@NonNull Uri uri) {
-        if (!uri.toString().contains("https://steamcommunity.com/market/listings")) {
-            return Single.error(new URISyntaxException(uri.toString(), "Неправильная ссылка."));
+    public Single<ItemMarketInfo> getItemMarketInfo(@NonNull String uri) {
+        if (!uri.contains("https://steamcommunity.com/market/listings")) {
+            return Single.error(new URISyntaxException(uri, "Неправильная ссылка."));
         }
-        var noHttpsUri = uri.toString().substring(8);
+        var noHttpsUri = uri.substring(8);
         var blocks = noHttpsUri.split("/");
         var parsedAppId = 0;
         try {
@@ -76,7 +74,7 @@ public class MarketPlaceModel {
         } catch (NumberFormatException e) {
             return Single.error(e);
         }
-        CharSequence marketHashName = Uri.decode(blocks[4]);
+        String marketHashName = URI.create(blocks[4]).toASCIIString();
         SteamAppId appId;
         switch (parsedAppId) {
             case 730:
@@ -89,21 +87,18 @@ public class MarketPlaceModel {
                 return Single.error(new IllegalArgumentException("Приложение поддерживает только CS:GO и Dota 2."));
         }
         return Single.create(emitter -> {
-            Thread t = new Thread(() -> {
-                try {
-                    Document document = Jsoup.connect(uri.toString()).get();
-                    final Element imageElement = Objects.requireNonNull(document.selectFirst("div.market_listing_largeimage")).selectFirst("img");
-                    assert imageElement != null;
-                    final String imageSrc = imageElement.attr("src");
-                    final Element nameElement = document.selectFirst("span.market_listing_item_name");
-                    assert nameElement != null;
-                    final String itemName = nameElement.text();
-                    emitter.onSuccess(new ItemMarketInfo(appId, marketHashName, imageSrc, itemName));
-                } catch (IOException e) {
-                    emitter.onError(new IOException("Во время загрузки произошла ошибка."));
-                }
-            });
-            t.start();
+            try {
+                Document document = Jsoup.connect(uri).get();
+                final Element imageElement = Objects.requireNonNull(document.selectFirst("div.market_listing_largeimage")).selectFirst("img");
+                assert imageElement != null;
+                final String imageSrc = imageElement.attr("src");
+                final Element nameElement = document.selectFirst("span.market_listing_item_name");
+                assert nameElement != null;
+                final String itemName = nameElement.text();
+                emitter.onSuccess(new ItemMarketInfo(appId, marketHashName, imageSrc, itemName));
+            } catch (IOException e) {
+                emitter.onError(new IOException("Во время загрузки произошла ошибка."));
+            }
         });
     }
 
@@ -145,7 +140,7 @@ public class MarketPlaceModel {
         entity.lowestPrice = item.getLowestPrice();
         entity.medianPrice = item.getMedianPrice();
         entity.steamAppId = item.getSteamAppId();
-        entity.hashMarketName = item.getHashMarketName().toString();
+        entity.hashMarketName = item.getHashMarketName();
         return entity;
     }
 }

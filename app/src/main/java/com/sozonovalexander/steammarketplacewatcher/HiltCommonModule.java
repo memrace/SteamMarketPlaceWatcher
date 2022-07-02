@@ -43,7 +43,7 @@ public class HiltCommonModule {
     }
 
     @Provides
-    public static SteamMarketPlaceWatcher provideMarketPlaceWatcher(@ApplicationContext Context application) {
-        return (SteamMarketPlaceWatcher) application;
+    public static SteamMarketPlaceWatcherApplication provideMarketPlaceWatcher(@ApplicationContext Context application) {
+        return (SteamMarketPlaceWatcherApplication) application;
     }
 }

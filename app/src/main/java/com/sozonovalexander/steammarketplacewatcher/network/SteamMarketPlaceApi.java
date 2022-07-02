@@ -4,7 +4,6 @@ import com.sozonovalexander.steammarketplacewatcher.models.ItemPriceInfo;
 
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -22,5 +21,5 @@ public interface SteamMarketPlaceApi {
      * @param marketHashName Хэш имя торговой площадки.
      */
     @GET("priceoverview")
-    Single<ItemPriceInfo> getPriceInfo(@Query("appid") int appId, @Query("currency") byte currency, @Query("market_hash_name") CharSequence marketHashName);
+    Single<ItemPriceInfo> getPriceInfo(@Query("appid") int appId, @Query("currency") byte currency, @Query("market_hash_name") String marketHashName);
 }

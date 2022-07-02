@@ -2,6 +2,9 @@ package com.sozonovalexander.steammarketplacewatcher.view.items;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -9,8 +12,10 @@ import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.sozonovalexander.steammarketplacewatcher.R;
 import com.sozonovalexander.steammarketplacewatcher.models.Currency;
@@ -28,16 +33,18 @@ public class MarketPlaceItemsFragment extends FragmentObserver {
 
     private MarketPlaceItemsViewModel mViewModel;
     private ArrayAdapter<String> adapter;
-    private TextInputLayout mAppBarMenu;
+    private TextInputLayout mSelectCurrency;
     private AutoCompleteTextView mSelectionView;
+    private FloatingActionButton fab;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         var view = inflater.inflate(R.layout.fragment_market_place_items, container, false);
-        mAppBarMenu = ((MainActivity) requireActivity()).getAppBarMenu();
-        mAppBarMenu.setVisibility(View.VISIBLE);
-        mSelectionView = (AutoCompleteTextView) mAppBarMenu.getEditText();
+        mSelectCurrency = ((MainActivity) requireActivity()).getSelectCurrency();
+        mSelectCurrency.setVisibility(View.VISIBLE);
+        mSelectionView = (AutoCompleteTextView) mSelectCurrency.getEditText();
+        fab = view.findViewById(R.id.add_new_market_item_button);
         return view;
     }
 
@@ -50,8 +57,12 @@ public class MarketPlaceItemsFragment extends FragmentObserver {
         mSelectionView.setOnItemClickListener((adapterView, view1, i, l) -> mViewModel.updateCurrency(Currency.values()[i]));
         mViewModel.userSettings.observe(getViewLifecycleOwner(), (s) -> mSelectionView.setText(s.currency.name(), false));
         subscribeOnFlowableWithLifecycle(mViewModel.getUserItems(), (result) -> {
-            mViewModel.set_items(result);
+            //  mViewModel.set_items(result);
         }, (error) -> {
+        });
+
+        fab.setOnClickListener(button -> {
+            ((MainActivity) requireActivity()).getNavController().navigate(R.id.action_goToAddNewItem);
         });
     }
 
@@ -62,8 +73,8 @@ public class MarketPlaceItemsFragment extends FragmentObserver {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mAppBarMenu.setVisibility(View.GONE);
+    public void onDestroyView() {
+        super.onDestroyView();
+        mSelectCurrency.setVisibility(View.GONE);
     }
 }

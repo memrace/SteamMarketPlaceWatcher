@@ -21,7 +21,7 @@
             android:layout_height="48dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/menu"
+                android:id="@+id/select_currency"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"

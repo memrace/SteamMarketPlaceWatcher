@@ -13,7 +13,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -58,7 +57,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     implementation "com.google.dagger:hilt-android:$hilt"
-    annotationProcessor  "com.google.dagger:hilt-compiler:$hilt"
+    annotationProcessor "com.google.dagger:hilt-compiler:$hilt"
 
     compileOnly "org.projectlombok:lombok:$lombok"
     annotationProcessor "org.projectlombok:lombok:$lombok"

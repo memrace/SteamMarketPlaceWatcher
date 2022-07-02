@@ -3,12 +3,12 @@ package com.sozonovalexander.steammarketplacewatcher.view;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.sozonovalexander.steammarketplacewatcher.R;
 
@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity {
     @Getter
     private NavController navController;
     @Getter
-    private TextInputLayout appBarMenu;
+    private TextInputLayout selectCurrency;
+    @Getter
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
         navController = navHostFragment.getNavController();
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(navController.getGraph()).build();
-        Toolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar = findViewById(R.id.topAppBar);
         NavigationUI.setupWithNavController(
                 toolbar, navController, appBarConfiguration);
-        appBarMenu = findViewById(R.id.menu);
-        assert appBarMenu != null;
+        selectCurrency = findViewById(R.id.select_currency);
+        assert selectCurrency != null;
     }
 
 }
