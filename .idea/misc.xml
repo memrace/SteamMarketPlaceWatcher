@@ -3,10 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/drawable/ic_arrow_outward.xml" value="0.273" />
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/drawable/ic_broken_image.xml" value="0.273" />
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/drawable/ic_launcher.xml" value="0.273" />
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/drawable/ic_loading_48dp.xml" value="0.273" />
         <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/layout/activity_main.xml" value="0.3125" />
         <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/layout/fragment_market_place_add_item.xml" value="0.3125" />
         <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/layout/fragment_market_place_items.xml" value="0.3125" />
         <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/layout/list_item.xml" value="0.3125" />
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/layout/market_item_view_holder.xml" value="0.3125" />
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/menu/item_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.273" />
+        <entry key="..\:/Users/sozon/AndroidStudioProjects/SteamMarketPlaceWatcher/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.273" />
       </map>
     </option>
   </component>

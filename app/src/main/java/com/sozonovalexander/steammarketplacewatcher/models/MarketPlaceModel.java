@@ -10,8 +10,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
-import java.net.URI;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -74,7 +77,12 @@ public class MarketPlaceModel {
         } catch (NumberFormatException e) {
             return Single.error(e);
         }
-        String marketHashName = URI.create(blocks[4]).toASCIIString();
+        String marketHashName;
+        try {
+            marketHashName = URLDecoder.decode(blocks[4], StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            return Single.error(e);
+        }
         SteamAppId appId;
         switch (parsedAppId) {
             case 730:
@@ -97,7 +105,7 @@ public class MarketPlaceModel {
                 final String itemName = nameElement.text();
                 emitter.onSuccess(new ItemMarketInfo(appId, marketHashName, imageSrc, itemName));
             } catch (IOException e) {
-                emitter.onError(new IOException("Во время загрузки произошла ошибка."));
+                emitter.onError(e);
             }
         });
     }
@@ -106,13 +114,17 @@ public class MarketPlaceModel {
         return _marketPlaceDatabase.marketPlaceItemDao()
                 .getMarketPlaceItems()
                 .map(items -> items.stream()
-                        .map(item -> new MarketPlaceItem(
-                                item.imageUri,
-                                item.name,
-                                item.hashMarketName,
-                                item.lowestPrice,
-                                item.medianPrice,
-                                item.steamAppId)).collect(Collectors.toList()));
+                        .map(item -> {
+                            var marketPlaceItem = new MarketPlaceItem(
+                                    item.imageUri,
+                                    item.name,
+                                    item.hashMarketName,
+                                    item.lowestPrice,
+                                    item.medianPrice,
+                                    item.steamAppId);
+                            marketPlaceItem.creationDate = item.creationDate;
+                            return marketPlaceItem;
+                        }).collect(Collectors.toList()));
     }
 
     public Completable addItem(MarketPlaceItem item) {
@@ -136,6 +148,9 @@ public class MarketPlaceModel {
     private static MarketPlaceItemEntity mapItemToEntity(MarketPlaceItem item) {
         var entity = new MarketPlaceItemEntity();
         entity.id = item.getId();
+        entity.creationDate = item.creationDate;
+        entity.creationDate = new Date();
+        entity.name = item.getName();
         entity.imageUri = item.getImageUri().toString();
         entity.lowestPrice = item.getLowestPrice();
         entity.medianPrice = item.getMedianPrice();

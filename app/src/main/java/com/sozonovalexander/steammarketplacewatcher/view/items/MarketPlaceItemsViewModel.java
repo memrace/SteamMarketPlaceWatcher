@@ -17,69 +17,72 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.Getter;
 
 @HiltViewModel
 public class MarketPlaceItemsViewModel extends ViewModel {
     private final MarketPlaceModel mModel;
-    private UserSettingsEntity _settings;
-    public final MutableLiveData<UserSettingsEntity> userSettings = new MutableLiveData<>();
-    private final SteamMarketPlaceWatcherApplication app;
+    public final MutableLiveData<UserSettingsEntity> userSettings = new MutableLiveData<>(null);
     @Getter
     private final ArrayList<MarketPlaceItem> _items = new ArrayList<>();
 
     @Inject
-    public MarketPlaceItemsViewModel(SteamMarketPlaceWatcherApplication application, MarketPlaceModel model) {
+    public MarketPlaceItemsViewModel(MarketPlaceModel model) {
         mModel = model;
-        app = application;
-        app.executorService.execute(() -> {
+
+        SteamMarketPlaceWatcherApplication.executorService.execute(() -> {
             var settings = model.getUserSettings(1).blockingGet();
             if (settings == null) {
-                _settings = new UserSettingsEntity();
-                _settings.currency = Currency.USD;
-                mModel.addUserSettings(_settings).blockingAwait();
-                mModel.setCurrency(_settings.currency);
-            } else {
-                _settings = settings;
+                settings = new UserSettingsEntity();
+                settings.currency = Currency.USD;
+                mModel.addUserSettings(settings).blockingAwait();
             }
-            app.getMainHandler().post(() -> userSettings.setValue(_settings));
+            UserSettingsEntity finalSettings = settings;
+            mModel.setCurrency(finalSettings.currency);
+            SteamMarketPlaceWatcherApplication.getMainHandler().post(() -> userSettings.setValue(finalSettings));
         });
     }
 
-
     public void updateCurrency(Currency pendingCurrency) {
-        app.executorService.execute(() -> {
-            _settings.currency = pendingCurrency;
-            mModel.updateUserSettings(_settings).blockingAwait();
-            mModel.setCurrency(_settings.currency);
-            if (_items != null) {
-                var updatedItems = _items.stream().map(oldItem -> {
-                    var newPrice = getNewItemPrice(oldItem).blockingGet();
-                    return new MarketPlaceItem(
-                            oldItem.getImageUri().toString(),
-                            oldItem.getName(),
-                            oldItem.getHashMarketName(),
-                            newPrice.getLowestPrice(),
-                            newPrice.getMedianPrice(),
-                            oldItem.getSteamAppId());
-                }).collect(Collectors.toList());
-                updateItems(updatedItems).blockingAwait();
-            }
+        SteamMarketPlaceWatcherApplication.executorService.execute(() -> {
+            mModel.updateUserSettings(userSettings.getValue()).blockingAwait();
+            mModel.setCurrency(pendingCurrency);
+            var updatedItems = _items.stream().map(oldItem -> {
+                var newPrice = getNewItemPrice(oldItem).blockingGet();
+                var marketPlaceItem = new MarketPlaceItem(
+                        oldItem.getImageUri().toString(),
+                        oldItem.getName(),
+                        oldItem.getHashMarketName(),
+                        newPrice.getLowestPrice(),
+                        newPrice.getMedianPrice(),
+                        oldItem.getSteamAppId());
+                marketPlaceItem.creationDate = oldItem.creationDate;
+                return marketPlaceItem;
+            }).collect(Collectors.toList());
+            updateItems(updatedItems).blockingAwait();
         });
     }
 
     public Flowable<List<MarketPlaceItem>> getUserItems() {
-        return mModel.getItems();
+        return mModel.getItems().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     private Completable updateItems(List<MarketPlaceItem> items) {
-        return mModel.updateItems(items);
+        return mModel.updateItems(items).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     private Single<ItemPriceInfo> getNewItemPrice(MarketPlaceItem item) {
-        return mModel.getItemPriceIfo(item.getSteamAppId(), item.getHashMarketName());
+        return mModel.getItemPriceIfo(item.getSteamAppId(), item.getHashMarketName()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void deleteItem(MarketPlaceItem item) {
+        SteamMarketPlaceWatcherApplication.executorService.execute(() -> {
+            mModel.deleteItem(item).blockingAwait();
+        });
     }
 }

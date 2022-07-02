@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.room.Room;
 
 import com.sozonovalexander.steammarketplacewatcher.dal.MarketPlaceDatabase;
+import com.sozonovalexander.steammarketplacewatcher.dal.Migrations;
 import com.sozonovalexander.steammarketplacewatcher.network.SteamMarketPlaceApi;
 
 import dagger.Module;
@@ -39,7 +40,7 @@ public class HiltCommonModule {
 
     @Provides
     public static MarketPlaceDatabase provideMarketPlaceDatabase(@ApplicationContext Context app) {
-        return Room.databaseBuilder(app, MarketPlaceDatabase.class, "marketplace-database").build();
+        return Room.databaseBuilder(app, MarketPlaceDatabase.class, "marketplace-database").addMigrations(Migrations.MIGRATION_1_2).build();
     }
 
     @Provides

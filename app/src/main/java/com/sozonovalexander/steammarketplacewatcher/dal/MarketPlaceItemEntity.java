@@ -1,12 +1,17 @@
 package com.sozonovalexander.steammarketplacewatcher.dal;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import com.sozonovalexander.steammarketplacewatcher.models.SteamAppId;
 
+import java.util.Date;
+
 @Entity
+@TypeConverters(DateConverter.class)
 public class MarketPlaceItemEntity {
     @PrimaryKey
     public int id;
@@ -28,4 +33,8 @@ public class MarketPlaceItemEntity {
 
     @ColumnInfo(name = "steam_app_id")
     public SteamAppId steamAppId;
+
+    @ColumnInfo(name = "creation_date", defaultValue = "0")
+    @NonNull
+    public Date creationDate;
 }

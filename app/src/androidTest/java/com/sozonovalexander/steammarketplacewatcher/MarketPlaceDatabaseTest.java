@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +50,7 @@ public class MarketPlaceDatabaseTest {
     private MarketPlaceItemEntity getTestItem(int param) {
         MarketPlaceItemEntity item = new MarketPlaceItemEntity();
         item.id = param;
+        item.creationDate = new Date();
         item.steamAppId = SteamAppId.CS_GO;
         item.imageUri = String.valueOf(param);
         item.name = String.valueOf(param);

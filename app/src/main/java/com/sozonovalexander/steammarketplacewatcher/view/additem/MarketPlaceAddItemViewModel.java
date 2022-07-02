@@ -1,5 +1,8 @@
 package com.sozonovalexander.steammarketplacewatcher.view.additem;
 
+import android.net.Uri;
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -18,12 +21,11 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MarketPlaceAddItemViewModel extends ViewModel {
     private final MarketPlaceModel mModel;
     final MutableLiveData<MarketPlaceItem> marketItem = new MutableLiveData<>(null);
-    private final SteamMarketPlaceWatcherApplication app;
+    final MutableLiveData<Boolean> canFind = new MutableLiveData<>(false);
 
     @Inject
-    public MarketPlaceAddItemViewModel(MarketPlaceModel model, SteamMarketPlaceWatcherApplication application) {
+    public MarketPlaceAddItemViewModel(MarketPlaceModel model) {
         mModel = model;
-        app = application;
     }
 
 
@@ -36,7 +38,7 @@ public class MarketPlaceAddItemViewModel extends ViewModel {
     }
 
     void findInfoAndPriceByUrl(String url) {
-        app.executorService.execute(() -> {
+        SteamMarketPlaceWatcherApplication.executorService.execute(() -> {
             try {
                 var info = mModel.getItemMarketInfo(url).blockingGet();
                 var price = mModel.getItemPriceIfo(info.getSteamAppId(), info.getMarketHashName()).blockingGet();
@@ -47,9 +49,9 @@ public class MarketPlaceAddItemViewModel extends ViewModel {
                         price.getLowestPrice(),
                         price.getMedianPrice(),
                         info.getSteamAppId());
-                app.getMainHandler().post(() -> marketItem.setValue(item));
+                SteamMarketPlaceWatcherApplication.getMainHandler().post(() -> marketItem.setValue(item));
             } catch (Throwable throwable) {
-                // TODO
+                Log.e("find_error", throwable.getMessage(), throwable);
             }
         });
     }

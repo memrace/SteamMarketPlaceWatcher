@@ -16,7 +16,7 @@ import io.reactivex.rxjava3.core.Single;
 @Dao
 public interface MarketPlaceItemDao {
 
-    @Query("SELECT * FROM MarketPlaceItemEntity")
+    @Query("SELECT * FROM MarketPlaceItemEntity ORDER BY creation_date DESC")
     Flowable<List<MarketPlaceItemEntity>> getMarketPlaceItems();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -7,15 +7,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import dagger.hilt.android.HiltAndroidApp;
+import lombok.Getter;
 
 @HiltAndroidApp
 public class SteamMarketPlaceWatcherApplication extends Application {
-    public final ExecutorService executorService = Executors.newFixedThreadPool(4);
-    private Handler handler;
+    public static final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    @Getter
+    private static Handler mainHandler;
 
-    public Handler getMainHandler() {
-        if (handler == null)
-            return new Handler(this.getMainLooper());
-        else return handler;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mainHandler = new Handler(this.getMainLooper());
     }
 }
