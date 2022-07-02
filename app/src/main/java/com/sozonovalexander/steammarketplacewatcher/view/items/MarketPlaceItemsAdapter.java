@@ -3,6 +3,7 @@ package com.sozonovalexander.steammarketplacewatcher.view.items;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ import com.bumptech.glide.RequestManager;
 import com.google.android.material.card.MaterialCardView;
 import com.sozonovalexander.steammarketplacewatcher.R;
 import com.sozonovalexander.steammarketplacewatcher.models.MarketPlaceItem;
+
+import java.util.Objects;
 
 public class MarketPlaceItemsAdapter extends ListAdapter<MarketPlaceItem, MarketPlaceItemsAdapter.MarketPlaceItemsViewHolder> {
     private final OnMarketItemClickListener onMarketItemClickListener;
@@ -76,7 +79,7 @@ public class MarketPlaceItemsAdapter extends ListAdapter<MarketPlaceItem, Market
     public static class MarketPlaceItemsViewHolder extends RecyclerView.ViewHolder {
         private final MaterialCardView mCardView = itemView.findViewById(R.id.card_view);
         private final ImageView mImageView = itemView.findViewById(R.id.image_view);
-        private final ImageButton mGoToMarketView = itemView.findViewById(R.id.go_to_market_button);
+        private final Button mGoToMarketView = itemView.findViewById(R.id.go_to_market_button);
         private final TextView mNameView = itemView.findViewById(R.id.name_text_view);
         private final TextView mMedianView = itemView.findViewById(R.id.median_price_view);
         private final TextView mLowestView = itemView.findViewById(R.id.lowest_price_view);
@@ -88,8 +91,8 @@ public class MarketPlaceItemsAdapter extends ListAdapter<MarketPlaceItem, Market
 
         private void bind(MarketPlaceItem item) {
             mNameView.setText(item.getName());
-            mMedianView.setText(String.format("Средняя цена: %s", item.getMedianPrice()));
-            mLowestView.setText(String.format("Минимальная цена: %s", item.getLowestPrice()));
+            mMedianView.setText(String.format("Avg price: %s", Objects.requireNonNullElse(item.getMedianPrice(), "Отсутствует")));
+            mLowestView.setText(String.format("Min price: %s", Objects.requireNonNullElse(item.getLowestPrice(), "Отсутствует")));
             mGlideRequestManager.load(item.getImageUri().toString()).placeholder(R.drawable.ic_loading_48dp).error(R.drawable.ic_broken_image).into(mImageView);
         }
     }

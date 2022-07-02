@@ -149,7 +149,6 @@ public class MarketPlaceModel {
         var entity = new MarketPlaceItemEntity();
         entity.id = item.getId();
         entity.creationDate = item.creationDate;
-        entity.creationDate = new Date();
         entity.name = item.getName();
         entity.imageUri = item.getImageUri().toString();
         entity.lowestPrice = item.getLowestPrice();

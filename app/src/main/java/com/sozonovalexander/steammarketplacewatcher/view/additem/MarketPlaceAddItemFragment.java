@@ -103,8 +103,8 @@ public class MarketPlaceAddItemFragment extends FragmentObserver {
             if (item != null) {
                 mNameView.setText(item.getName());
                 Glide.with(this).load(item.getImageUri().toString()).placeholder(R.drawable.ic_loading_48dp).error(R.drawable.ic_broken_image).into(mItemImage);
-                mMedianPriceView.setText(String.format("Средняя цена: %s", item.getMedianPrice()));
-                mLowestPriceView.setText(String.format("Минимальная цена: %s", item.getLowestPrice()));
+                mMedianPriceView.setText(String.format("Avg price: %s", Objects.requireNonNullElse(item.getMedianPrice(), "Отсутствует")));
+                mLowestPriceView.setText(String.format("Min price: %s", Objects.requireNonNullElse(item.getLowestPrice(), "Отсутствует")));
             }
         });
     }

@@ -11,7 +11,6 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface MarketPlaceItemDao {
@@ -19,7 +18,7 @@ public interface MarketPlaceItemDao {
     @Query("SELECT * FROM MarketPlaceItemEntity ORDER BY creation_date DESC")
     Flowable<List<MarketPlaceItemEntity>> getMarketPlaceItems();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     Completable addMarketPlaceItem(MarketPlaceItemEntity item);
 
     @Update

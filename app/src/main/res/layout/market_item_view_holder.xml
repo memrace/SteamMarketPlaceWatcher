@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="wrap_content"
     android:padding="8dp">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         style="@style/Widget.Material3.CardView.Outlined"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="8dp">
 
             <ImageView
@@ -30,20 +30,24 @@
             <TextView
                 android:id="@+id/name_text_view"
                 style="@style/MaterialAlertDialog.Material3.Title.Text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:overScrollMode="always"
+                android:textAlignment="center"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Item name" />
+                tools:text="Item name Item name Item name Item name" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/prices"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:orientation="vertical"
-                android:paddingHorizontal="4dp"
                 app:layout_constraintBottom_toBottomOf="@id/image_view"
                 app:layout_constraintEnd_toStartOf="@id/go_to_market_button"
                 app:layout_constraintStart_toEndOf="@id/image_view"
@@ -52,29 +56,30 @@
                 <TextView
                     android:id="@+id/median_price_view"
                     style="@style/MaterialAlertDialog.Material3.Body.Text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="16sp"
                     tools:text="Средняя цена: 4$" />
 
                 <TextView
                     android:id="@+id/lowest_price_view"
                     style="@style/MaterialAlertDialog.Material3.Body.Text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:textSize="16sp"
                     tools:text="Минимальная цена: 4$" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <ImageButton
+            <Button
                 android:id="@+id/go_to_market_button"
-                style="@style/Widget.Material3.MaterialTimePicker.ImageButton"
+                style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:src="@drawable/ic_shop_checkout"
+                app:icon="@drawable/ic_shop_checkout"
+                app:iconGravity="textStart"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

@@ -23,7 +23,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/select_currency"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp"
@@ -33,6 +33,7 @@
 
                 <AutoCompleteTextView
                     android:padding="0dp"
+                    android:textSize="14sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none" />

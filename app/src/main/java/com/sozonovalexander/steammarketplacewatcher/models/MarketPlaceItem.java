@@ -31,8 +31,8 @@ public class MarketPlaceItem implements Serializable {
     public MarketPlaceItem(@NonNull String imageUri,
                            @NonNull String name,
                            @NonNull String hashMarketName,
-                           @NonNull String lowestPrice,
-                           @NonNull String medianPrice,
+                           String lowestPrice,
+                           String medianPrice,
                            @NonNull SteamAppId steamAppId) {
         this.imageUri = URI.create(imageUri);
         this.name = name;
@@ -48,16 +48,16 @@ public class MarketPlaceItem implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MarketPlaceItem that = (MarketPlaceItem) o;
-        return id == that.id && imageUri.equals(that.imageUri) && name.equals(that.name) && hashMarketName.equals(that.hashMarketName) && lowestPrice.equals(that.lowestPrice) && medianPrice.equals(that.medianPrice) && steamAppId == that.steamAppId;
+        return id == that.id && imageUri.equals(that.imageUri) && name.equals(that.name) && hashMarketName.equals(that.hashMarketName) && Objects.equals(lowestPrice, that.lowestPrice) && Objects.equals(medianPrice, that.medianPrice) && steamAppId == that.steamAppId && creationDate.equals(that.creationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, imageUri, name, hashMarketName, lowestPrice, medianPrice, steamAppId);
+        return Objects.hash(id, imageUri, name, hashMarketName, lowestPrice, medianPrice, steamAppId, creationDate);
     }
 
     public String getItemUrl() {
-        return String.format("https://steamcommunity.com/market/listings/%s/%s", steamAppId, hashMarketName);
+        return String.format("https://steamcommunity.com/market/listings/%s/%s", steamAppId.getId(), hashMarketName);
     }
 }
 

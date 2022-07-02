@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -33,9 +34,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class MarketPlaceItemsFragment extends FragmentObserver implements MarketPlaceItemsAdapter.OnMarketItemClickListener {
 
     private MarketPlaceItemsViewModel mViewModel;
-    private ArrayAdapter<String> mCurrencyAdapter;
     private TextInputLayout mSelectCurrency;
     private AutoCompleteTextView mSelectionView;
+    private SwipeRefreshLayout mRefreshLayout;
     private FloatingActionButton mFab;
     private final MarketPlaceItemsAdapter mItemsAdapter = new MarketPlaceItemsAdapter(new MarketPlaceItemsAdapter.MarketItemDiffUtil(), this);
 
@@ -53,8 +54,11 @@ public class MarketPlaceItemsFragment extends FragmentObserver implements Market
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mRefreshLayout = view.findViewById(R.id.swipe_refresh);
+        mRefreshLayout.setOnRefreshListener(() -> subscribeOnCompletableWithLifecycle(mViewModel.refreshItems(), () -> mRefreshLayout.setRefreshing(false), throwable -> {
+        }));
         var items = Arrays.stream(Currency.values()).map(Enum::name).collect(Collectors.toList());
-        mCurrencyAdapter = new ArrayAdapter<>(requireContext(), R.layout.list_item, items);
+        ArrayAdapter<String> mCurrencyAdapter = new ArrayAdapter<>(requireContext(), R.layout.list_item, items);
         mSelectionView.setAdapter(mCurrencyAdapter);
         mSelectionView.setOnItemClickListener((adapterView, view1, i, l) -> mViewModel.updateCurrency(Currency.values()[i]));
         mViewModel.userSettings.observe(getViewLifecycleOwner(), (s) -> {
@@ -64,8 +68,7 @@ public class MarketPlaceItemsFragment extends FragmentObserver implements Market
         final RecyclerView itemsRecycler = view.findViewById(R.id.items_recycler);
         itemsRecycler.setAdapter(mItemsAdapter);
         subscribeOnFlowableWithLifecycle(mViewModel.getUserItems(), list -> {
-            mViewModel.get_items().clear();
-            mViewModel.get_items().addAll(list);
+            mViewModel.set_items(list);
             mItemsAdapter.submitList(list);
         }, (error) -> {
         });

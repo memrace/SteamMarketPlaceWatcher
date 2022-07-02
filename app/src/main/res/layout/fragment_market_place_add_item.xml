@@ -36,9 +36,10 @@
     <TextView
         android:id="@+id/name_text_view"
         style="@style/MaterialAlertDialog.Material3.Title.Text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:textAlignment="center"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,18 +71,20 @@
         <TextView
             android:id="@+id/median_price_view"
             style="@style/MaterialAlertDialog.Material3.Body.Text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textAlignment="viewStart"
+            android:textSize="16sp"
             tools:text="Средняя цена: 4$" />
 
         <TextView
             android:id="@+id/lowest_price_view"
             style="@style/MaterialAlertDialog.Material3.Body.Text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textSize="24sp"
+            android:textAlignment="viewStart"
+            android:textSize="16sp"
             tools:text="Минимальная цена: 4$" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>
